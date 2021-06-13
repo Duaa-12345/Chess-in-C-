@@ -1,0 +1,794 @@
+#include"Board.h"
+#include"Pawn.h"
+#include"Rook.h"
+#include"Bishop.h"
+#include"Queen.h"
+#include"Knight.h"
+#include"King.h"
+#include<iostream>
+#include<fstream>
+#include <Windows.h>
+#include<stdlib.h>
+using namespace std;
+    
+
+//Board * arr[9][9];
+void gotoxy (int x, int y)
+{
+	COORD coordinates;
+	coordinates.X = x;
+	coordinates.Y = y;
+	SetConsoleCursorPosition (GetStdHandle (STD_OUTPUT_HANDLE), coordinates);
+}
+
+
+
+void Board::setBoard(Board * arr[9][9])
+{
+	//set pieces for player 2
+
+			arr[1][1] = new Rook(1,1,2);
+	        arr[1][8] = new Rook(1,8,2);
+			arr[1][2] = new Knight(1,2,2);
+	        arr[1][7] = new Knight(1,7,2);
+			arr[1][3] = new Bishop(1,3,2);
+			arr[1][6] = new Bishop(1,6,2);
+			arr[1][4] = new Queen(1,4,2);
+			arr[1][5] = new King(1,5,2);
+
+			for(int i = 1; i < 9; i++)
+		    {
+			  arr[2][i] = new Pawn(2,i,2);
+		    }
+
+	///////set pieces for player 1/////
+
+			arr[8][1] = new Rook(8,1,1);
+	        arr[8][8] = new Rook(8,8,1);
+			arr[8][2] = new Knight(8,2,1);
+	        arr[8][7] = new Knight(8,7,1);
+			arr[8][3] = new Bishop(8,3,1);
+			arr[8][6] = new Bishop(8,6,1);
+			arr[8][4] = new Queen(8,4,1);
+			arr[8][5] = new King(8,5,1);
+
+			for(int i = 1; i < 9; i++)
+		    {
+			  arr[7][i] = new Pawn(7,i,1);
+		    }
+
+		for(int i = 3; i < 7; i++)
+		{
+			for(int j = 1; j < 9; j++)
+			{
+				arr[i][j] = nullptr;
+			}
+		}
+}
+void  Board::printBoard(Board * arr[9][9])
+{
+	//char a;
+	cout<<"   1     2      3     4     5     6     7     8"<<endl;
+	cout<<"   -----------------------------------------------"<<endl;
+	for(int i = 1; i < 9; i++)
+	{	
+		cout<<i<<" | ";
+		for(int j = 1; j < 9; j++)
+		{
+			if(arr[i][j] != nullptr)
+			{
+				int temp = arr[i][j]->getCode();
+				int temp1 = arr[i][j]->getPlayer();
+				if (temp == 6)
+				{
+					if (temp1 == 1)
+						cout<<" P ";
+					else
+						cout<<" p ";
+				}
+				else if(temp==1)
+				{
+					if(temp1==1)
+					{
+						cout<<" R ";
+					}
+					else
+					{
+						cout<<" r ";
+					}
+				}
+				else if(temp==3)
+				{
+					if(temp1==1)
+					{
+						cout<<" B ";
+					}
+					else
+					{
+						cout<<" b ";
+					}
+				}
+				else if(temp==4)
+				{
+					if(temp1==1)
+					{
+						cout<<" Q ";
+					}
+					else
+					{
+						cout<<" q ";
+					}
+				}
+				else if(temp==2)
+				{
+					if(temp1==1)
+					{
+						cout<<" N ";
+					}
+					else
+					{
+						cout<<" n ";
+					}
+				}
+				else if(temp==5)
+				{
+					if(temp1==1)
+					{
+						cout<<" K ";
+					}
+					else
+					{
+						cout<<" k ";
+					}
+				}
+			}
+			else
+				cout<<"   ";			
+
+			cout<<" | ";
+		}
+		   cout<<endl<<"   ------------------------------------------------"<<endl;
+		
+	}
+	gotoxy(51,8);
+	cout<<" ****************************"<<endl;
+	gotoxy(51,9);
+	cout<<" press M to go to main menu"<<endl;
+	gotoxy(51,10);
+	cout<<"  press s to save game      "<<endl;
+	gotoxy(51,11);
+	cout<<" ****************************"<<endl;
+	gotoxy(0,20);
+
+}
+
+void  Board::game(Board * arr[9][9])
+{
+	system ("color 17");
+	bool checkmate=false;bool check=false;
+	printBoard(arr);
+	int cr;int choice=0,turn=0,counter=0, count=0;char option;
+	int cc;
+	int dr;int dc;int temp=0,temp1=0,temp2=0,temp3=0;
+	//cout<<"player 1 turns"<<endl;;
+	while(checkmate==false)
+	{
+	  cout<<"Press 1 to move and press 2 to attack"<<endl;
+		  cin>>choice;
+	    cout<<"Enter Piece to Move (Row): ";
+		cin>>cr;
+		cout<<"Enter Piece to Move (Col): ";
+		cin>>cc;
+		cout<<"enter desired row"<<endl;
+		cin>>dr;
+		cout<<"enter desired col"<<endl;
+		cin>>dc;
+
+		if(arr[cr][cc]!=nullptr)
+		{
+		turn=arr[cr][cc]->getPlayer();
+		}
+		if(counter==1 &&count==turn)
+		{ 
+			 system("cls");
+			  cout<<"Illegal move"<<endl;
+			 if(turn==1)
+			{
+			 cout<<"player 2 turns"<<endl;
+			}
+			else
+			{
+				cout<<"player 1 turns"<<endl;
+			}
+			 
+		}
+		else
+		{
+		  counter=0;
+		  count=turn;
+		if(arr[cr][cc]!=nullptr)
+		{
+			if(choice==1&&arr[dr][dc]==nullptr)
+			{
+			    arr[cr][cc]->move(arr,cr,cc,dr,dc);
+			}
+			else if(choice==2&&arr[dr][dc]!=nullptr)
+			{
+				 temp=arr[cr][cc]->getPlayer();
+		         temp1=arr[dr][dc]->getPlayer();
+				if(temp!=temp1)
+				{
+				   arr[cr][cc]->attack(arr,cr,cc,dr,dc);
+				}
+				else
+			    {
+					Beep(1000000,500);
+					system("cls");
+					cout<<"Illegal move"<<endl;
+			    }
+
+			}
+			else
+			{
+				Beep(1000000,500);
+				system("cls");
+				cout<<"Illegal move"<<endl;
+
+			}
+
+		}
+		
+		else
+		{
+			Beep(1000000,500);
+			system("cls");
+			cout<<"Illegal move"<<endl;
+			
+		}
+////////////////////////////CODE FOR CHECK///////////////////////////////////////////
+		if(arr[dr][dc]!=nullptr)
+		{
+		  temp=arr[dr][dc]->getCode();
+             if(temp1==1||temp1==4)
+			 {
+			  for(int i=dr+1;i<9;i++)                  //conditions for check
+				{
+					if(arr[i][dc]!=nullptr)
+					{
+						temp1=arr[i][dc]->getPlayer();
+						temp2=arr[i][dc]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+
+				}
+				for(int i=dr-1;i>0;i--)             //conditions for check
+				{
+					if(arr[i][dc]!=nullptr)
+					{
+						temp1=arr[i][dc]->getPlayer();
+						temp2=arr[i][dc]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+
+				}
+				for(int i=dc-1;i>0;i--)             //conditions for check
+				{
+					if(arr[dr][i]!=nullptr)
+					{
+						temp1=arr[dr][i]->getPlayer();
+						temp2=arr[dr][i]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+
+				}
+				for(int i=dc+1;i<9;i++)             //conditions for check
+				{
+					if(arr[dr][i]!=nullptr)
+					{
+						temp1=arr[dr][i]->getPlayer();
+						temp2=arr[dr][i]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+
+				}
+			 }
+				///////////check for diagonals//////////////////////////////////////////////////
+			 else if(temp==4||temp==3)
+			 {
+				for(int i=dr+1,j=dc+1;i<9 &&j<9;i++,j++)
+				{
+					if(arr[i][j]!=nullptr)
+					{
+						temp1=arr[i][j]->getPlayer();
+						temp2=arr[i][j]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+				}
+				for(int i=dr+1,j=dc-1;i<9 &&j>0;i++,j--)
+				{
+					if(arr[i][j]!=nullptr)
+					{
+						temp1=arr[i][j]->getPlayer();
+						temp2=arr[i][j]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+				}
+				for(int i=dr-1,j=dc-1;i>0 &&j>0;i--,j--)
+				{
+					if(arr[i][j]!=nullptr)
+					{
+						temp1=arr[i][j]->getPlayer();
+						temp2=arr[i][j]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+				}
+				for(int i=dr-1,j=dc+1;i>0 &&j<9;i--,j++)
+				{
+					if(arr[i][j]!=nullptr)
+					{
+						temp1=arr[i][j]->getPlayer();
+						temp2=arr[i][j]->getCode();
+						if(temp!=temp1 &&temp2==5)
+						{
+							check=true;
+						}
+					}
+				}
+				}
+///////////////////////CHECKS FOR KNIGHT////////////
+			 else if(temp==2)
+			 {
+				 if(arr[dr+1][dc+2]!=nullptr&&dr+1<9&&dc+2<9)
+				 {
+				 temp2=arr[dr+1][dc+2]->getCode();
+				 temp1=arr[dr+1][dc+2]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				 }
+				 if(arr[dr+2][dc+1]!=nullptr&&dr+2<9&&dc+1<9)
+				 {
+				 temp2=arr[dr+2][dc+1]->getCode();
+				 temp1=arr[dr+2][dc+1]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				 }
+				  if(arr[dr+2][dc-1]!=nullptr&&dr+2<9&&dc-1>0)
+				 {
+				 temp2=arr[dr+2][dc-1]->getCode();
+				 temp1=arr[dr+2][dc-1]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+				  if(arr[dr+1][dc-2]!=nullptr&&dr+1<9&&dc-2>0)
+				 {
+				 temp2=arr[dr+1][dc-2]->getCode();
+				 temp1=arr[dr+1][dc-2]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+				   if(arr[dr-2][dc-1]!=nullptr&&dr-2>0&&dc-1>0)
+				 {
+				 temp2=arr[dr-2][dc-1]->getCode();
+				 temp1=arr[dr-2][dc-1]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				   }
+				    if(arr[dr-1][dc-2]!=nullptr&&dr-1>0&&dc-2>0)
+				 {
+				  temp2=arr[dr-1][dc-2]->getCode();
+				 temp1=arr[dr-1][dc-2]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+					}
+				 if(arr[dr-1][dc+2]!=nullptr&&dr-1>0&&dc+2<9)
+				 {
+				  temp2=arr[dr-1][dc+2]->getCode();
+				 temp1=arr[dr-1][dc+2]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				 }
+				  if(arr[dr-2][dc+1]!=nullptr&&dr-2>0&&dc+1<9)
+				 {
+				  temp2=arr[dr-2][dc+1]->getCode();
+				 temp1=arr[dr-2][dc+1]->getPlayer();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+
+			 }
+			 else if(temp==5)
+			 {
+				  if(arr[dr][dc+1]!=nullptr&&dc+1<9)
+				 {
+				 temp1=arr[dr][dc+1]->getPlayer();
+				 temp2=arr[dr][dc+1]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+				 if(arr[dr][dc-1]!=nullptr&&dc-1>0)
+				 {
+				  temp1=arr[dr][dc-1]->getPlayer();
+				 temp2=arr[dr][dc-1]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+
+				  if(arr[dr+1][dc+1]!=nullptr&&dr+1<9&&dc+1<9)
+				 {
+				 temp1=arr[dr+1][dc+1]->getPlayer();
+				 temp2=arr[dr+1][dc+1]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+				  if(arr[dr+1][dc-1]!=nullptr&&dc-1>0&&dr+1<9)
+				 {
+				 temp1=arr[dr+1][dc-1]->getPlayer();
+				 temp2=arr[dr+1][dc-1]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+				 if(arr[dr+1][dc]!=nullptr&&dr+1<9)
+				 {
+				 temp1=arr[dr+1][dc]->getPlayer();
+				 temp2=arr[dr+1][dc]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				  }
+				 if(arr[dr-1][dc+1]!=nullptr&&dr-1>0&&dc+1<9)
+				 {
+				 temp1=arr[dr-1][dc+1]->getPlayer();
+				 temp2=arr[dr-1][dc+1]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				 }
+				 if(arr[dr-1][dc-1]!=nullptr&&dr-1>0&&dc-1>0)
+				 {
+				 temp1=arr[dr-1][dc-1]->getPlayer();
+				 temp2=arr[dr-1][dc-1]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				 }
+				 if(arr[dr-1][dc]!=nullptr&&dr-1>0)
+				 {
+				 temp1=arr[dr-1][dc]->getPlayer();
+				 temp2=arr[dr-1][dc]->getCode();
+				 if(temp!=temp1 &&temp2==5)
+				  {
+						check=true;
+				  }
+				 }
+
+			 }
+			 else if(temp==6)
+			 {
+				 if(turn==1)
+				 {
+					if(arr[dr-1][dc-1]!=nullptr&&dr-1>0&&dc-1>0)
+				    {
+				     temp1=arr[dr-1][dc-1]->getPlayer();
+				     temp2=arr[dr-1][dc-1]->getCode();
+				      if(temp!=temp1 &&temp2==5)
+					 {
+						check=true;
+					 }
+				    }
+					if(arr[dr-1][dc+1]!=nullptr&&dr-1>0&&dc+1<9)
+				    {
+				     temp1=arr[dr-1][dc+1]->getPlayer();
+				     temp2=arr[dr-1][dc+1]->getCode();
+				      if(temp!=temp1 &&temp2==5)
+					 {
+						check=true;
+					 }
+				    }
+
+				 }
+				 else if(turn==2)
+				 {
+					 if(arr[dr+1][dc-1]!=nullptr&&dr+1<9&&dc-1>0)
+				    {
+				     temp1=arr[dr+1][dc-1]->getPlayer();
+				     temp2=arr[dr+1][dc-1]->getCode();
+				      if(temp!=temp1 &&temp2==5)
+					 {
+						check=true;
+					 }
+				    }
+					if(arr[dr+1][dc+1]!=nullptr&&dr+1<9&&dc+1<9)
+				    {
+				     temp1=arr[dr+1][dc+1]->getPlayer();
+				     temp2=arr[dr+1][dc+1]->getCode();
+				      if(temp!=temp1 &&temp2==5)
+					 {
+						check=true;
+					 }
+				    }
+				 }
+			 }
+				if(check==true)
+				{
+					system("cls");
+					cout<<"King is in check"<<endl;
+					system("pause");
+				}
+				}
+			
+		
+		if(arr[cr][cc]==nullptr )
+		{
+			if(turn==1)
+			{
+			 cout<<"player 2 turns"<<endl;
+			}
+			else
+			{
+				cout<<"player 1 turns"<<endl;
+			}
+			counter++;
+		}
+		else
+		{
+			cout<<"player "<<turn<< " turns"<<endl ;
+		}
+		}
+		
+		printBoard(arr);
+		cin>>option;
+		if(option=='m')
+		{
+			system("cls");
+			menu(arr);
+		}
+		else if(option=='s')
+		{
+			save(arr);
+		}
+	}
+}
+
+void  Board::menu(Board * arr[9][9])
+{
+	system ("color 5B");
+	char choice;
+	gotoxy(22,1);
+	cout<<" MAIN MENU "<<endl;
+	gotoxy(20,6);
+	cout<<" press P to Play new game "<<endl;
+	gotoxy(20,7);
+	cout<<" press R to Play saved game "<<endl;
+	gotoxy(20,8);
+	cout<<" press S to save game"<<endl;
+	gotoxy(20,9);
+	cout<<" press E to Exit game "<<endl;
+		cin>>choice;
+		system("cls");
+		if(choice=='p'||choice=='P')
+		{
+			game(arr);
+		}
+		else if(choice=='s'||choice=='S')
+		{
+			save(arr);
+			game(arr);
+		}
+		else if(choice=='r'||choice=='R')
+		{
+			Reload(arr);
+			game(arr);
+		}
+		else if(choice=='e'||choice=='E')
+		{
+			exit(1);
+		}
+
+}
+void  Board::save(Board * arr[9][9])
+{
+	ifstream input("input.txt");
+	ofstream output("output.txt");
+	for(int i = 1; i < 9; i++)
+	{	
+		for(int j = 1; j < 9; j++)
+		{
+			if(arr[i][j] != nullptr)
+			{
+				int temp = arr[i][j]->getCode();
+				int temp1 = arr[i][j]->getPlayer();
+				if (temp == 6)
+				{
+					if (temp1 == 1)
+						output<<"P";
+					else
+						output<<"p";
+				}
+				else if(temp==1)
+				{
+					if(temp1==1)
+					{
+						output<<"R";
+					}
+					else
+					{
+						output<<"r";
+					}
+				}
+				else if(temp==3)
+				{
+					if(temp1==1)
+					{
+						output<<"B";
+					}
+					else
+					{
+						output<<"b";
+					}
+				}
+				else if(temp==4)
+				{
+					if(temp1==1)
+					{
+						output<<"Q";
+					}
+					else
+					{
+						output<<"q";
+					}
+				}
+				else if(temp==2)
+				{
+					if(temp1==1)
+					{
+						output<<"N";
+					}
+					else
+					{
+						output<<"n";
+					}
+				}
+				else if(temp==5)
+				{
+					if(temp1==1)
+					{
+						output<<"K";
+					}
+					else
+					{
+						output<<"k";
+					}
+				}
+			}
+			else
+				output<<" ";
+			
+
+		}
+	}
+	output.close();
+}
+void  Board::Reload(Board * arr[9][9])
+{
+	ifstream output("output.txt");
+	char ch;
+	while(!output.eof())
+	{
+		for(int i = 1; i < 9; i++)
+	    {	
+		  for(int j = 1; j < 9; j++)
+		  {
+			  ch=output.get();
+			  if(ch=='p')
+			  {
+				  arr[i][j]=new Pawn(i,j,2);
+			  }
+			  else  if(ch=='r')
+			  {
+				  arr[i][j]=new Rook(i,j,2);
+			  }
+			  else  if(ch=='b')
+			  {
+				  arr[i][j]=new Bishop(i,j,2);
+			  }
+			  else  if(ch=='n')
+			  {
+				  arr[i][j]=new Knight(i,j,2);
+			  }
+			  else  if(ch=='k')
+			  {
+				  arr[i][j]=new King(i,j,2);
+			  }
+			  else  if(ch=='q')
+			  {
+				  arr[i][j]=new Queen(i,j,2);
+			  }
+			   else  if(ch=='R')
+			  {
+				  arr[i][j]=new Rook(i,j,1);
+			  }
+			  else  if(ch=='B')
+			  {
+				  arr[i][j]=new Bishop(i,j,1);
+			  }
+			  else  if(ch=='N')
+			  {
+				  arr[i][j]=new Knight(i,j,1);
+			  }
+			  else  if(ch=='K')
+			  {
+				  arr[i][j]=new King(i,j,1);
+			  }
+			  else  if(ch=='Q')
+			  {
+				  arr[i][j]=new Queen(i,j,1);
+			  }
+			  else  if(ch=='P')
+			  {
+				  arr[i][j]=new Pawn(i,j,1);
+			  }
+			  else  if(ch==' ')
+			  {
+				  arr[i][j]=nullptr;
+			  }
+
+		  }
+		}
+	}
+	//output.close();
+	//printBoard(arr);
+	//game(arr);
+}
+void Board::Checkmate()
+{
+	system("pause");
+	exit(1);
+}

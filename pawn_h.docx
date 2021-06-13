@@ -1,0 +1,17 @@
+#include"Board.h"
+class Pawn : public Board
+{
+public:
+	Pawn(int, int, int);
+	void move(Board *arr[9][9],int a, int b,int c,int d);
+	void attack(Board *arr[9][9],int a, int b,int c,int d);
+	int getCode()
+	{
+		return 6;
+	}
+	int getPlayer()
+	{
+		return player;
+	}
+  void pawn_promotion(Board * arr[9][9],int dr,int dc);
+};

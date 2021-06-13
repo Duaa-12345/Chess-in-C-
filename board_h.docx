@@ -1,0 +1,27 @@
+#ifndef A
+#define A
+
+class Board
+{
+protected:
+	int row;
+	int col;
+	int player;
+public:
+	void setBoard(Board * arr[9][9]);
+	void printBoard(Board * arr[9][9]);
+	void update(Board * arr[9][9], int a, int b, int c, int d);
+	void game(Board * arr[9][9]);
+	void menu(Board * arr[9][9]);
+	void save(Board * arr[9][9]);
+	void Reload(Board * arr[9][9]);
+	void Checkmate();
+	virtual void move(Board *arr[9][9],int a, int b,int c,int d) = 0;
+	virtual void attack(Board *arr[9][9],int a, int b,int c,int d) = 0;
+	virtual int getCode() = 0;
+	virtual int getPlayer() = 0;
+	
+	//void game(Board *arr[9][9]);
+};
+
+#endif

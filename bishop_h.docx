@@ -1,0 +1,18 @@
+#include"Board.h"
+
+class Bishop : public Board
+{
+public:
+	 Bishop(int, int, int);
+	void move(Board *arr[9][9],int a, int b,int,int);
+	void attack(Board *arr[9][9],int a, int b,int c,int d);
+	int getCode()
+	{
+		return 3;
+	}
+	int getPlayer()
+	{
+		return player;
+	}
+
+};

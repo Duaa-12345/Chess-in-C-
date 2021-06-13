@@ -1,0 +1,233 @@
+#include"Pawn.h"
+#include"Rook.h"
+#include"Bishop.h"
+#include"Queen.h"
+#include"Knight.h"
+#include"King.h"
+#include<iostream>
+#include<windows.h>
+using namespace std;
+Pawn::Pawn(int a, int b, int c)
+{
+	row = a;
+	col = b;
+	player = c;
+}
+void Pawn::move(Board *arr[9][9],int cr, int cc,int dr,int dc)
+{
+	int temp=arr[cr][cc]->getPlayer();
+	bool check=true;
+		if (arr[cr][cc]->getCode() == 6)
+		{
+		  if(cc==dc&&cr!=dr)
+		  {
+			if (arr[cr][cc]->getPlayer() == 1)              // checks for player 1  
+			{
+				if(cr==7)                                          //check if the first move of pawn
+				{
+					if((dr==cr-1 ) && arr[dr][dc]==nullptr )
+					{
+		                    check=true;
+		            }
+					else if((dr==cr-2 ) && (arr[dr][dc]==nullptr) &&(arr[cr-1][dc]==nullptr))
+					{
+						check=true;
+					}
+					else
+					{
+						check=false;
+					}
+				}
+				else
+				{
+					if((dr==cr-1 ) && arr[dr][dc]==nullptr )
+					{
+		                    check=true;
+							
+		            }
+					else
+					{
+						check=false;
+					}
+				}
+
+			}
+////////////////////////////////////////////////////////
+			//check for player 2
+			else
+			{
+				if(cr==2)                                          //check if the first move of pawn
+				{
+					if((dr==cr+1 ) && arr[dr][dc]==nullptr )
+					{
+		                    check=true;
+		            }
+					else if((dr==cr+2 ) && (arr[dr][dc]==nullptr) &&(arr[cr+1][dc]==nullptr))
+					{
+						check=true;
+					}
+					else
+					{
+						check=false;
+					}
+				}
+				else
+				{
+					if((dr==cr+1 ) && arr[dr][dc]==nullptr )
+					{
+		                    check=true;
+		            }
+					else
+					{
+						check=false;
+					}
+				}	
+			}
+
+		  }
+		  else
+		  {
+			  check=false;
+		  }
+		  if(check==true)
+		  {
+			  arr[dr][dc]=arr[cr][cc];
+			  arr[cr][cc]=nullptr;
+			  if(dr==1)
+			  {
+				  pawn_promotion(arr,dr,dc);
+			  }
+			  else if(dr==8)
+			  {
+				   pawn_promotion(arr,dr,dc);
+			  }
+			    system("cls");
+			  
+		  }
+		  else
+		  {
+			   Beep(1000000,500);
+			    system("cls");
+			  cout<<"illegal move"<<endl;
+			 
+		  }
+
+		}
+		
+}
+void Pawn:: pawn_promotion(Board * arr[9][9],int dr,int dc)
+{
+	  int opt=0;
+	    cout<<"       PAWN IS PROMOTED    "<<endl;
+		cout<<"Enter the piece in which you want to promote pawn "<<endl;
+		cout<<"press 1 for Rook"<<endl;
+		cout<<"press 2 for Knight"<<endl;
+		cout<<"press 3 for Bishop"<<endl;
+		cout<<"press 4 for Queen"<<endl;
+
+		cin>>opt;
+		if(opt==1)
+		{
+			if(dr==1)
+			{
+				arr[dr][dc]=new Rook(dr,dc,1);  
+			}
+			else if(dr==8)
+			{
+				arr[dr][dc]=new Rook(dr,dc,2);
+			}
+		}
+		else if(opt==2)
+		{
+			if(dr==1)
+			{
+				arr[dr][dc]=new Knight(dr,dc,1);  
+			}
+			else if(dr==8)
+			{
+				arr[dr][dc]=new Knight(dr,dc,2);
+			}
+		}
+		else if(opt==3)
+		{
+			if(dr==1)
+			{
+				arr[dr][dc]=new Bishop(dr,dc,1);  
+			}
+			else if(dr==8)
+			{
+				arr[dr][dc]=new Bishop(dr,dc,2);
+			}
+		}
+		else if(opt==4)
+		{
+			if(dr==1)
+			{
+				arr[dr][dc]=new Queen(dr,dc,1);  
+			}
+			else if(dr==8)
+			{
+				arr[dr][dc]=new Queen(dr,dc,2);
+			}
+		}
+}
+void Pawn::attack(Board *arr[9][9],int cr, int cc,int dr,int dc)
+{
+	int temp=arr[cr][cc]->getPlayer();
+	int temp1=arr[dr][dc]->getPlayer();
+	int temp2=arr[dr][dc]->getCode();
+	bool check=true;
+	if (arr[cr][cc]->getCode() == 6)
+	{
+	  if(cr!=dr&&cc==dc)
+	  {
+		  check=true;
+	  }
+	   if (arr[cr][cc]->getPlayer() == 1)              // checks for player 1  
+	   {
+			if(dr==cr-1 && (cc==dc+1 ||col==dc-1) && arr[dr][dc]!=nullptr)
+			{
+		               check=true;
+			}
+		   else
+			{
+		                check=false;
+			}
+	   }
+	   else
+	   {
+		   if(dr==cr+1 && (cc==dc+1 ||col==dc-1) && arr[dr][dc]!=nullptr)
+			{
+		               check=true;
+			}
+		   else
+			{
+		                check=false;
+			}
+	   }
+	   if(check==true)
+		  {
+			   if(temp!=temp1 && temp2==5)
+					 {
+						 cout<<" CHECK MATE. . player "<<temp<<" wins"<<endl;
+						 Checkmate();
+					 }
+			  arr[dr][dc]=arr[cr][cc];
+			  arr[cr][cc]=nullptr;
+			  if(dr==1)
+			  {
+				  pawn_promotion(arr,dr,dc);
+			  }
+			  else if(dr==8)
+			  {
+				  pawn_promotion(arr,dr,dc);
+			  }
+			   system("cls");
+		  }
+		  else
+		  {   
+			  Beep(1000000,500);
+			  system("cls");
+		  }
+	}
+}

@@ -1,0 +1,490 @@
+#include"Queen.h"
+#include"Rook.h"
+#include"windows.h"
+#include<iostream>
+using namespace std;
+Queen::Queen(int a, int b, int c)
+{
+	row = a;
+	col = b;
+	player = c;
+}
+void Queen::move(Board *arr[9][9],int cr, int cc,int dr,int dc)
+{
+	int temp=arr[cr][cc]->getPlayer();
+	bool check=true;
+	if (arr[cr][cc]->getCode() == 4)
+	{
+////////////////checks for sideways ,forward and backward
+
+		  if(cc==dc &&cr!=dr)
+		  {
+			 if(cr>dr)
+			 {
+				 for(int i=cr-1;i>=dr;i--)                                   //bottom to top
+				 {
+					if (arr[i][cc] != nullptr)
+					{
+						check=false;
+						break;
+					}
+					else
+					{
+						check=true;
+					}
+			     }
+			 }
+			 else if(cr<dr)
+			 {
+				for(int i=cr+1;i<=dr;i++)                                   //top to bottom 
+				{
+					if (arr[i][cc] != nullptr)
+					{
+						check=false;
+						break;
+					}
+					else
+					{
+						check=true;
+					}
+				 }
+			}
+			 else
+				 check=false;
+		  }
+//////////////////////////////////////////////////////////////////////
+		  else if(cr==dr &&cc!=dc)
+		  {
+			  if(cc<dc)
+			  {
+				  for(int i=cc+1;i<=dc;i++)                                   //left to right
+				  {
+					if (arr[cr][i] != nullptr)
+					{
+						check=false;
+						break;
+					}
+					else
+					{
+						check=true;
+					}
+			      }
+			  }
+			  else if(cc>dc)
+			  {
+				  for(int i=cc-1;i>=dc;i--)                                   //left to right
+				  {
+					if (arr[cr][i] != nullptr)
+					{
+						check=false;
+						break;
+					}
+					else
+					{
+						check=true;
+					}
+			      }
+			  }
+			  else
+				  check=false;
+
+		  }
+ //////////////////////////////checks for diagonals/////////////////////////
+		  else if(cr!=dr&&cc!=dc)
+		  {
+			if(cr<dr)
+			{
+			 if(cc<dc)                              //check from left top to right bottom
+				{
+					for(int i=cr+1,j=cc+1;i<=dr;i++,j++)
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i==dr)
+						{
+							if(j!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+						
+					}
+				}
+				else if(cc>dc)
+				{
+					for(int i=cr+1,j=cc-1;i<=dr;i++,j--)         //from right top to left bottom
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i==dr)
+						{
+							if(j!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+				}
+			}
+/////////////////////////////////////////////////////////////
+			else if(cr>dr)
+			{
+				if(cc<dc)
+				{
+					for(int i=cr-1,j=cc+1;i>=dr;i--,j++)         //from left bottom to right top
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i==dr)
+						{
+							if(j!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+				}
+				else if(cc>dc)
+				{
+					for(int i=cr-1,j=cc-1;i>=dr;i--,j--)         //from right bottom to left top
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i==dr)
+						{
+							if(j!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+				}
+			}
+		  }
+		  else
+		  {
+			  check=false;
+		  }
+			 
+		  
+			if(check==true)
+			{
+				arr[dr][dc]=arr[cr][cc];
+				arr[cr][cc]=nullptr;
+				system("cls");
+				
+			}
+			else
+			{
+				Beep(1000000,500);
+				system("cls");
+				cout<<"illegal move"<<endl;
+				 
+			}
+
+		}
+}
+void Queen::attack(Board *arr[9][9],int cr, int cc,int dr,int dc)
+{
+	int temp=arr[cr][cc]->getPlayer();
+	int temp1=arr[dr][dc]->getPlayer();
+	int temp2=arr[dr][dc]->getCode();
+	bool check=true;
+
+	if (arr[cr][cc]->getCode() == 4)
+	{
+////////////////checks for sideways ,forward and backward
+
+		if(cc==dc &&cr!=dr)
+		 {
+				 if(cr<dr)                           //check from top to botom
+				 {
+					if(cr==dr-1 )                   //check the very next row
+					{
+				      check=true;
+					}
+					else
+					{
+						for(int i=cr+1;i<dr;i++)
+						 {
+							 if(arr[i][dc]!=nullptr)
+							 {
+								 check=false;
+								 break;
+							 }
+							 else
+							 {
+								 check=true;
+							 }
+				      
+						 }
+					}
+				 }
+				 else if(cr>dr)                    //check from bottom to top
+				 {
+					if(cr==dr+1 )                   //check the very next row
+					{
+				      check=true;
+					}
+					else
+					{
+						for(int i=cr-1;i>dr;i--)
+						 {
+							 if(arr[i][dc]!=nullptr)
+							 {
+								 check=false;
+								 break;
+							 }
+							 else
+							 {
+								 check=true;
+							 }
+				      
+						 }
+					}
+				 }
+			   }
+////////////////////////checks for left to right and vice versa////////////////////////////////
+
+			   else if(cr==dr &&cc!=dc)                 //check from left to right
+			   {
+				   if(cc<dc)
+				   {
+					   if(cc==dc+1 )                   //check the very next coulumn
+						{
+							 check=true;
+						}
+						else
+						{
+							for(int i=cc+1;i<dc;i++)
+							{
+								 if(arr[dc][i]!=nullptr)
+								 {
+									 check=false;
+									 break;
+								 }
+								 else
+								 {
+									check=true;
+								 }
+				      
+						    }
+					   }
+				   }
+				   else if(cc>dc)
+				   {
+					   if(cc==dc-1 )                   //check the very next coulumn
+						{
+							 check=true;
+						}
+						else
+						{
+							for(int i=cc-1;i>dc;i--)
+							{
+								 if(arr[dc][i]!=nullptr)
+								 {
+									 check=false;
+									 break;
+								 }
+								 else
+								 {
+									check=true;
+								 }
+				      
+						    }
+					   }
+				   }
+		}
+
+///////////////////checks for diagonally moves////////////
+
+	   else if(cr!=dr&&cc!=dc)
+	   {
+		   if(cr<dr)
+			{
+				if(cc<dc)                              //check from left top to right bottom
+				{
+					if(cr==dr-1 &&cc==dc-1)                   //check the very next row
+					{
+				      check=true;
+					}
+					else
+					{
+					for(int i=cr+1,j=cc+1;i<dr;i++,j++)
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i+1==dr)
+						{
+							if(j+1!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+					}
+				}
+				else if(cc>dc)
+				{
+					if(cr==dr-1 &&cc==dc+1)                   //check the very next row
+					{
+				      check=true;
+					}
+					else
+					{
+					for(int i=cr+1,j=cc-1;i<dr;i++,j--)         //from right top to left bottom
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i+1==dr)
+						{
+							if(j-1!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+					}
+				}
+			}
+///////////////////////////////////////////////////////////////////
+
+			else if(cr>dr)
+			{
+				if(cc<dc)
+				{
+					if(cr==dr+1 &&cc==dc-1)                   //check the very next row
+					{
+				      check=true;
+					}
+					else
+					{
+					for(int i=cr-1,j=cc+1;i>dr;i--,j++)         //from left bottom to right top
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i-1==dr)
+						{
+							if(j+1!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+					}
+				}
+				else if(cc>dc)
+				{
+					if(cr==dr+1 &&cc==dc+1)                   //check the very next row
+					{
+				      check=true;
+					}
+					else
+					{
+					for(int i=cr-1,j=cc-1;i>dr;i--,j--)         //from right bottom to left top
+					{
+						if(arr[i][j]!=nullptr)
+						{
+							check=false;
+							break;
+						}
+						else
+						{
+							check=true;
+						}
+						if(i-1==dr)
+						{
+							if(j-1!=dc)
+							{
+								check=false;
+								break;
+							}
+						}
+					}
+					}
+				}
+			}
+
+	   }	
+	   else
+	   {
+		   check=false;
+	   }
+	   if(check==true)
+				 {
+					 if(temp!=temp1 && temp2==5)
+			         {
+						cout<<" CHECK MATE. . player "<<temp<<" wins"<<endl;
+			    		 Checkmate();
+			         }
+					 arr[dr][dc]=arr[cr][cc];
+					 arr[cr][cc]=nullptr;
+					 //system("cls");
+				 }
+				 else
+				 {
+					 Beep(1000000,500);
+					 system("cls");
+					 cout<<"illegal move"<<endl;
+				 }
+			
+		
+	}
+
+}

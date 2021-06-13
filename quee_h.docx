@@ -1,0 +1,16 @@
+#include"Board.h"
+class Queen : public Board
+{
+public:
+	Queen(int, int, int);
+	void move(Board *arr[9][9],int a, int b,int c,int d);
+	void attack(Board *arr[9][9],int a, int b,int c,int d);
+	int getCode()
+	{
+		return 4;
+	}
+	int getPlayer()
+	{
+		return player;
+	}
+};
